@@ -1,0 +1,103 @@
+﻿@page "/quiz"
+
+<h1>Quiz</h1>
+
+<p>Выберите сложность (от 1 до 5):</p>
+<input @bind="SelectedDifficulty" />
+<p>@SelectedDifficulty</p>
+<button class="btn btn-primary" @onclick="StartQuiz">Начать</button>
+
+<p>Вопрос:</p>
+<p>@CurrentQuestion</p>
+<p>Ответ:</p>
+<input @bind="CurrentAnswer" />
+
+<p>Правильных ответов: @CorrectAnswers</p>
+<p>На следующие вопросы были даны неверные ответы: @WrongAnswers</p>
+<p></p>
+
+@code {
+
+    public int SelectedDifficulty { get; set; }
+    public int QuizDifficulty { get; set; }
+    public int CorrectAnswers { get; set; }
+    public List<string> WrongAnswers { get; set; }
+    public string CurrentQuestion { get; set; }
+    public int CurrentAnswer { get; set; }
+
+    public void StartQuiz()
+    {
+        Random randomizer = new Random();
+
+        int addend1;
+        int addend2;
+        WrongAnswers = new List<string> { };
+        QuizDifficulty = SetDifficulty();
+
+
+        addend1 = randomizer.Next(QuizDifficulty * 2);
+        addend2 = randomizer.Next(QuizDifficulty * 2);
+        List<int> numbers = new List<int> { addend1, addend2 };
+        CurrentQuestion = string.Format("{0}+{1}=?", addend1, addend2);
+        int Answer = CurrentAnswer;
+        if (Answer == numbers.Sum())
+            CorrectAnswers++;
+        else
+            WrongAnswers.Add(CurrentQuestion);
+
+        addend1 = randomizer.Next(QuizDifficulty * 2);
+        addend2 = randomizer.Next(QuizDifficulty * 2);
+        numbers = new List<int> { addend1, addend2 };
+        CurrentQuestion = string.Format("{0}+{1}=?", addend1, addend2);
+        Answer = CurrentAnswer;
+        if (Answer == numbers.Sum())
+            CorrectAnswers++;
+        else
+            WrongAnswers.Add(CurrentQuestion);
+
+
+        //for (int questionNumber = 0; questionNumber < 3; questionNumber++)
+        //{
+        //    addend1 = randomizer.Next(QuizDifficulty);
+        //    addend2 = randomizer.Next(QuizDifficulty);
+        //    List<int> numbers = new List<int> { addend1, addend2 };
+        //    CurrentQuestion = string.Format("{0}x{1}=?", addend1, addend2);
+        //    if (CurrentAnswer == numbers.Aggregate((x, y) => x * y))
+        //        CorrectAnswers++;
+        //    else
+        //        WrongAnswers.Add(CurrentQuestion);
+        //}
+    }
+
+    public int SetDifficulty()
+    {
+        switch(SelectedDifficulty)
+        {
+            case 1:
+                QuizDifficulty = 11;
+                break;
+
+            case 2:
+                QuizDifficulty = 21;
+                break;
+
+            case 3:
+                QuizDifficulty = 31;
+                break;
+
+            case 4:
+                QuizDifficulty = 51;
+                break;
+
+            case 5:
+                QuizDifficulty = 101;
+                break;
+
+            default:
+                QuizDifficulty = 51;
+                break;
+        }
+        return QuizDifficulty;
+    }
+
+}
