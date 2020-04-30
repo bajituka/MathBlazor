@@ -2,95 +2,176 @@
 
 <h1>Quiz</h1>
 
-<p>Выберите сложность (от 1 до 5):</p>
-<input @bind="SelectedDifficulty" />
-<p>@SelectedDifficulty</p>
-<button class="btn btn-primary" @onclick="StartQuiz">Начать</button>
+<div class="row">
 
-<p>Вопрос:</p>
-<p>@CurrentQuestion</p>
-<p>Ответ:</p>
-<input @bind="CurrentAnswer" />
+    <div class="col-lg-1">
+        <label for="difficulty">Сложность</label>
+        <select id="difficulty" class="form-control" @bind="SelectedDifficulty">
+            <option value="1">Очень легко</option>
+            <option value="2">Легко</option>
+            <option value="3">Средне</option>
+            <option value="4">Сложно</option>
+            <option value="5">Очень сложно</option>
+        </select>
+    </div>
 
-<p>Правильных ответов: @CorrectAnswers</p>
-<p>На следующие вопросы были даны неверные ответы: @WrongAnswers</p>
-<p></p>
+    <div class="col-lg-1">
+        <label for="type">Тип</label>
+        <select id="type" class="form-control">
+            <option value="1" selected>Сложение</option>
+            <option value="2">Вычитание</option>
+            <option value="3">Умножение</option>
+            <option value="4">Деление</option>
+        </select>
+    </div>
+
+    <div class="col-lg-8"></div>
+
+    <div class="col-lg-2 alert alert-success">
+        Правильных ответов: @CorrectAnswers
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-10"></div>
+
+    <div class="col-lg-2 alert alert-danger">
+
+        Неверных ответов: COUNT
+        @foreach (var wrongAnswer in WrongAnswers)
+        {
+            <p>@wrongAnswer</p>
+        }
+
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12 text-center">
+        <button class="btn btn-primary" @onclick="GenerateAdditionExercise">Новая задача</button>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12 text-center">
+        <h1>@CurrentExercise</h1>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-5"></div>
+
+        <div class="col-lg-2">
+            <input class="form-control text-center" @bind="CurrentAnswer" />
+        </div>
+
+    <div class="col-lg-5"></div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-12 text-center">
+        <div class="container">
+            <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
+        </div>
+        
+    </div>
+
+</div>
 
 @code {
 
-    public int SelectedDifficulty { get; set; }
-    public int QuizDifficulty { get; set; }
-    public int CorrectAnswers { get; set; }
-    public List<string> WrongAnswers { get; set; }
-    public string CurrentQuestion { get; set; }
-    public int CurrentAnswer { get; set; }
+    public int SelectedDifficulty = 3;
+    public int QuizDifficulty;
+    public int CorrectAnswers;
+    public string CurrentExercise;
+    public int CurrentAnswer;
+    List<string> WrongAnswers = new List<string>();
+    List<int> Addends;
 
-    public void StartQuiz()
+    private void GenerateAdditionExercise()
     {
         Random randomizer = new Random();
-
         int addend1;
         int addend2;
-        WrongAnswers = new List<string> { };
-        QuizDifficulty = SetDifficulty();
-
-
+        SetDifficulty(SelectedDifficulty);
         addend1 = randomizer.Next(QuizDifficulty * 2);
         addend2 = randomizer.Next(QuizDifficulty * 2);
-        List<int> numbers = new List<int> { addend1, addend2 };
-        CurrentQuestion = string.Format("{0}+{1}=?", addend1, addend2);
-        int Answer = CurrentAnswer;
-        if (Answer == numbers.Sum())
-            CorrectAnswers++;
-        else
-            WrongAnswers.Add(CurrentQuestion);
-
-        addend1 = randomizer.Next(QuizDifficulty * 2);
-        addend2 = randomizer.Next(QuizDifficulty * 2);
-        numbers = new List<int> { addend1, addend2 };
-        CurrentQuestion = string.Format("{0}+{1}=?", addend1, addend2);
-        Answer = CurrentAnswer;
-        if (Answer == numbers.Sum())
-            CorrectAnswers++;
-        else
-            WrongAnswers.Add(CurrentQuestion);
-
-
-        //for (int questionNumber = 0; questionNumber < 3; questionNumber++)
-        //{
-        //    addend1 = randomizer.Next(QuizDifficulty);
-        //    addend2 = randomizer.Next(QuizDifficulty);
-        //    List<int> numbers = new List<int> { addend1, addend2 };
-        //    CurrentQuestion = string.Format("{0}x{1}=?", addend1, addend2);
-        //    if (CurrentAnswer == numbers.Aggregate((x, y) => x * y))
-        //        CorrectAnswers++;
-        //    else
-        //        WrongAnswers.Add(CurrentQuestion);
-        //}
+        Addends = new List<int> { addend1, addend2 };
+        CurrentExercise = string.Format("{0}+{1}=?", Addends[0], Addends[1]);
     }
 
-    public int SetDifficulty()
+    private void CheckAnswer()
     {
-        switch(SelectedDifficulty)
+        if (CurrentAnswer == Addends.Sum())
+        {
+            CorrectAnswers++;
+        }
+        else
+        {
+            WrongAnswers.Add(CurrentExercise);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+    public void MultiplicationExercise(int difficulty)
+    {
+        Random randomizer = new Random();
+        int addend1;
+        int addend2;
+    }
+
+
+    //for (int questionNumber = 0; questionNumber < 3; questionNumber++)
+    //{
+    //    addend1 = randomizer.Next(QuizDifficulty);
+    //    addend2 = randomizer.Next(QuizDifficulty);
+    //    List<int> numbers = new List<int> { addend1, addend2 };
+    //    CurrentQuestion = string.Format("{0}x{1}=?", addend1, addend2);
+    //    if (CurrentAnswer == numbers.Aggregate((x, y) => x * y))
+    //        CorrectAnswers++;
+    //    else
+    //        WrongAnswers.Add(CurrentQuestion);
+    //}
+
+    public int SetDifficulty(int selectedDifficulty)
+    {
+        switch (selectedDifficulty)
         {
             case 1:
                 QuizDifficulty = 11;
                 break;
 
             case 2:
-                QuizDifficulty = 21;
-                break;
-
-            case 3:
-                QuizDifficulty = 31;
-                break;
-
-            case 4:
                 QuizDifficulty = 51;
                 break;
 
-            case 5:
+            case 3:
                 QuizDifficulty = 101;
+                break;
+
+            case 4:
+                QuizDifficulty = 1001;
+                break;
+
+            case 5:
+                QuizDifficulty = 10001;
                 break;
 
             default:
