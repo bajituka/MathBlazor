@@ -1,4 +1,5 @@
 ﻿@page "/quiz"
+@inject IJSRuntime js
 
 <h1>Quiz</h1>
 
@@ -68,9 +69,9 @@
 
     <div class="col-lg-5"></div>
 
-        <div class="col-lg-2">
-            <input class="form-control text-center" @bind="CurrentAnswer" />
-        </div>
+    <div class="col-lg-2">
+        <input class="form-control text-center" id="currentAnswerInput" @bind="CurrentAnswer" @onkeyup="EnterPressed" />
+    </div>
 
     <div class="col-lg-5"></div>
 
@@ -82,22 +83,22 @@
         <div class="container">
             <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
         </div>
-        
+
     </div>
 
 </div>
 
 @code {
 
-    public int SelectedDifficulty = 3;
-    public int QuizDifficulty;
-    public int CorrectAnswers;
-    public string CurrentExercise;
-    public int CurrentAnswer;
+    private int SelectedDifficulty = 3;
+    private int QuizDifficulty;
+    private int CorrectAnswers;
+    private string CurrentExercise;
+    private int? CurrentAnswer;
     List<string> WrongAnswers = new List<string>();
     List<int> Addends;
 
-    private void GenerateAdditionExercise()
+    private async void GenerateAdditionExercise()
     {
         Random randomizer = new Random();
         int addend1;
@@ -107,6 +108,8 @@
         addend2 = randomizer.Next(QuizDifficulty * 2);
         Addends = new List<int> { addend1, addend2 };
         CurrentExercise = string.Format("{0}+{1}", Addends[0], Addends[1]);
+        await Focus("currentAnswerInput");
+
     }
 
     private void CheckAnswer()
@@ -119,6 +122,8 @@
         {
             WrongAnswers.Add(CurrentExercise);
         }
+        bool testvalue = false;
+        CurrentAnswer = (testvalue == true) ? 1234 : (int?)null; //clear the int value
         GenerateAdditionExercise();
     }
 
@@ -135,7 +140,7 @@
     //        WrongAnswers.Add(CurrentQuestion);
     //}
 
-    public int SetDifficulty(int selectedDifficulty)
+    private int SetDifficulty(int selectedDifficulty)
     {
         switch (selectedDifficulty)
         {
@@ -166,4 +171,21 @@
         return QuizDifficulty;
     }
 
+}
+
+@code {
+    private void EnterPressed(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            CheckAnswer();
+        }
+    }
+}
+
+@code {
+    public async Task Focus(string elementId)
+    {
+        await js.InvokeVoidAsync("jsfunction.focusElement", elementId);
+    }
 }
