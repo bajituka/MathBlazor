@@ -106,7 +106,7 @@
         addend1 = randomizer.Next(QuizDifficulty * 2);
         addend2 = randomizer.Next(QuizDifficulty * 2);
         Addends = new List<int> { addend1, addend2 };
-        CurrentExercise = string.Format("{0}+{1}=?", Addends[0], Addends[1]);
+        CurrentExercise = string.Format("{0}+{1}", Addends[0], Addends[1]);
     }
 
     private void CheckAnswer()
@@ -119,22 +119,7 @@
         {
             WrongAnswers.Add(CurrentExercise);
         }
-
-    }
-
-
-
-
-
-
-
-
-
-    public void MultiplicationExercise(int difficulty)
-    {
-        Random randomizer = new Random();
-        int addend1;
-        int addend2;
+        GenerateAdditionExercise();
     }
 
 
