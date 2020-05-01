@@ -118,6 +118,20 @@ app {
     color: red;
 }
 
+.correctResultsHint {
+    position: absolute;
+    top: 65px;
+    right: 10px;
+    width: 300px;
+}
+
+.incorrectResultsHint {
+    position: absolute;
+    top: 125px;
+    right: 10px;
+    width: 300px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

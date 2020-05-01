@@ -3,6 +3,23 @@
 
 <h1>Quiz</h1>
 
+<div class="alert alert-success correctResultsHint">
+    Правильных ответов: @CorrectAnswers
+</div>
+
+@if (WrongAnswers.Any())
+{
+    <div class="alert alert-danger incorrectResultsHint">
+
+        Неверных ответов: COUNT
+        @foreach (var wrongAnswer in WrongAnswers)
+        {
+            <p>@wrongAnswer</p>
+        }
+
+    </div>
+}
+
 <div class="row">
 
     <div class="col-lg-1">
@@ -26,35 +43,11 @@
         </select>
     </div>
 
-    <div class="col-lg-8"></div>
-
-    <div class="col-lg-2 alert alert-success">
-        Правильных ответов: @CorrectAnswers
-    </div>
+    <div class="col-lg-12"></div>
 
 </div>
 
-<div class="row">
-
-    <div class="col-lg-10"></div>
-
-    @if (WrongAnswers.Any())
-    {
-        <div class="col-lg-2 alert alert-danger">
-
-            Неверных ответов: COUNT
-            @foreach (var wrongAnswer in WrongAnswers)
-            {
-                <p>@wrongAnswer</p>
-            }
-
-        </div>
-    }
-
-</div>
-
-
-<div class="row h-50 align-items-center m-5">
+<div class="row h-25 align-items-center m-5">
 
     @if (String.IsNullOrEmpty(CurrentExercise))
     {
@@ -81,7 +74,7 @@
 
         <div class="col-lg-12 text-center">
 
-                <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
+            <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
 
         </div>
 
@@ -89,11 +82,11 @@
 
 
 </div>
-    
 
 
 
- 
+
+
 
 
 @code {
