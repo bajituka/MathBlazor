@@ -38,59 +38,69 @@
 
     <div class="col-lg-10"></div>
 
-    <div class="col-lg-2 alert alert-danger">
+    @if (WrongAnswers.Any())
+    {
+        <div class="col-lg-2 alert alert-danger">
 
-        Неверных ответов: COUNT
-        @foreach (var wrongAnswer in WrongAnswers)
-        {
-            <p>@wrongAnswer</p>
-        }
+            Неверных ответов: COUNT
+            @foreach (var wrongAnswer in WrongAnswers)
+            {
+                <p>@wrongAnswer</p>
+            }
 
-    </div>
-</div>
-
-<div class="row">
-
-    <div class="col-lg-12 text-center">
-        <button class="btn btn-primary" @onclick="GenerateAdditionExercise">Новая задача</button>
-    </div>
+        </div>
+    }
 
 </div>
 
-<div class="row">
+@if (String.IsNullOrEmpty(CurrentExercise))
+{
+    <div class="row">
 
-    <div class="col-lg-12 text-center">
-        <h1>@CurrentExercise</h1>
+        <div class="col-lg-12 text-center">
+            <button class="btn btn-primary" @onclick="GenerateAdditionExercise">Начать</button>
+        </div>
+
     </div>
+    
+}
 
-</div>
+@if (!String.IsNullOrEmpty(CurrentExercise))
+{
+    <div class="row">
 
-<div class="row">
-
-    <div class="col-lg-5"></div>
-
-    <div class="col-lg-2">
-        <input class="form-control text-center" id="currentAnswerInput" @bind="CurrentAnswer" @onkeyup="EnterPressed" />
-    </div>
-
-    <div class="col-lg-5"></div>
-
-</div>
-
-<div class="row">
-
-    <div class="col-lg-12 text-center">
-        <div class="container">
-            <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
+        <div class="col-lg-12 text-center">
+            <h1>@CurrentExercise</h1>
         </div>
 
     </div>
 
-</div>
+    <div class="row">
+
+        <div class="col-lg-5"></div>
+
+        <div class="col-lg-2">
+            <input class="form-control text-center" id="currentAnswerInput" @bind="CurrentAnswer" @onkeyup="EnterPressed" />
+        </div>
+
+        <div class="col-lg-5"></div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-12 text-center">
+            <div class="container">
+                <button class="btn btn-primary" @onclick="CheckAnswer">Проверить</button>
+            </div>
+        </div>
+
+    </div>
+}
 
 @code {
 
-    private int SelectedDifficulty = 3;
+    private int SelectedDifficulty = 1;
     private int QuizDifficulty;
     private int CorrectAnswers;
     private string CurrentExercise;
@@ -98,7 +108,7 @@
     List<string> WrongAnswers = new List<string>();
     List<int> Addends;
 
-    private async void GenerateAdditionExercise()
+    private void GenerateAdditionExercise()
     {
         Random randomizer = new Random();
         int addend1;
@@ -108,11 +118,9 @@
         addend2 = randomizer.Next(QuizDifficulty * 2);
         Addends = new List<int> { addend1, addend2 };
         CurrentExercise = string.Format("{0}+{1}", Addends[0], Addends[1]);
-        await Focus("currentAnswerInput");
-
     }
 
-    private void CheckAnswer()
+    private async void CheckAnswer()
     {
         if (CurrentAnswer == Addends.Sum())
         {
@@ -125,6 +133,7 @@
         bool testvalue = false;
         CurrentAnswer = (testvalue == true) ? 1234 : (int?)null; //clear the int value
         GenerateAdditionExercise();
+        await Focus("currentAnswerInput");
     }
 
 
