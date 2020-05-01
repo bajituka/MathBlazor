@@ -11,7 +11,7 @@
 {
     <div class="alert alert-danger incorrectResultsHint">
 
-        Неверных ответов: COUNT
+        Неверных ответов: @WrongAnswers.Count
         @foreach (var wrongAnswer in WrongAnswers)
         {
             <p>@wrongAnswer</p>
@@ -35,7 +35,7 @@
 
     <div class="col-lg-1">
         <label for="type">Тип</label>
-        <select id="type" class="form-control">
+        <select id="type" class="form-control" @bind="QuizType">
             <option value="1" selected>Сложение</option>
             <option value="2">Вычитание</option>
             <option value="3">Умножение</option>
@@ -92,6 +92,7 @@
 @code {
 
     private int SelectedDifficulty = 1;
+    private int QuizType;
     private int QuizDifficulty;
     private int CorrectAnswers;
     private string CurrentExercise;
@@ -107,19 +108,85 @@
         SetDifficulty(SelectedDifficulty);
         addend1 = randomizer.Next(QuizDifficulty * 2);
         addend2 = randomizer.Next(QuizDifficulty * 2);
+        if (QuizType == 2 || QuizType == 4)
+        {
+            while (addend1 < addend2)
+            {
+                addend1 = randomizer.Next(QuizDifficulty * 2);
+            }
+            //TODO improve division addends generation logic
+            if (QuizType == 4)
+            {
+                while (addend1 % addend2 != 0)
+                {
+                    addend1 = randomizer.Next(QuizDifficulty * 2);
+                }
+            }
+
+        }
         Addends = new List<int> { addend1, addend2 };
-        CurrentExercise = string.Format("{0}+{1}", Addends[0], Addends[1]);
+        switch (QuizType)
+        {
+            case 1:
+                CurrentExercise = string.Format("{0}+{1}", Addends[0], Addends[1]);
+                break;
+            case 2:
+                CurrentExercise = string.Format("{0}-{1}", Addends[0], Addends[1]);
+                break;
+            case 3:
+                CurrentExercise = string.Format("{0}*{1}", Addends[0], Addends[1]);
+                break;
+            case 4:
+                CurrentExercise = string.Format("{0}:{1}", Addends[0], Addends[1]);
+                break;
+        }
+
     }
 
     private async void CheckAnswer()
     {
-        if (CurrentAnswer == Addends.Sum())
+        switch (QuizType)
         {
-            CorrectAnswers++;
-        }
-        else
-        {
-            WrongAnswers.Add(CurrentExercise);
+            case 1:
+                if (CurrentAnswer == Addends.Sum())
+                {
+                    CorrectAnswers++;
+                }
+                else
+                {
+                    WrongAnswers.Add(CurrentExercise);
+                }
+                break;
+            case 2:
+                if (CurrentAnswer == Math.Abs(Addends[0] - Addends[1]))
+                {
+                    CorrectAnswers++;
+                }
+                else
+                {
+                    WrongAnswers.Add(CurrentExercise);
+                }
+                break;
+            case 3:
+                if (CurrentAnswer == Addends[0]*Addends[1])
+                {
+                    CorrectAnswers++;
+                }
+                else
+                {
+                    WrongAnswers.Add(CurrentExercise);
+                }
+                break;
+            case 4:
+                if (CurrentAnswer == Addends[0] / Addends[1])
+                {
+                    CorrectAnswers++;
+                }
+                else
+                {
+                    WrongAnswers.Add(CurrentExercise);
+                }
+                break; ;
         }
         bool testvalue = false;
         CurrentAnswer = (testvalue == true) ? 1234 : (int?)null; //clear the int value
