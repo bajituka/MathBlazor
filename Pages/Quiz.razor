@@ -83,12 +83,6 @@
 
 </div>
 
-
-
-
-
-
-
 @code {
 
     private int SelectedDifficulty = 1;
@@ -108,7 +102,7 @@
         SetDifficulty(SelectedDifficulty);
         addend1 = randomizer.Next(QuizDifficulty * 2);
         addend2 = randomizer.Next(QuizDifficulty * 2);
-        if (QuizType == 2 || QuizType == 4)
+        if (QuizType == 2 || QuizType == 4) //avoid negative values
         {
             while (addend1 < addend2)
             {
@@ -145,67 +139,20 @@
 
     private async void CheckAnswer()
     {
-        switch (QuizType)
+
+        if (CurrentAnswer == Addends.Sum() || CurrentAnswer == Math.Abs(Addends[0] - Addends[1]) || CurrentAnswer == Addends[0] * Addends[1] || CurrentAnswer == Addends[0] / Addends[1])
         {
-            case 1:
-                if (CurrentAnswer == Addends.Sum())
-                {
-                    CorrectAnswers++;
-                }
-                else
-                {
-                    WrongAnswers.Add(CurrentExercise);
-                }
-                break;
-            case 2:
-                if (CurrentAnswer == Math.Abs(Addends[0] - Addends[1]))
-                {
-                    CorrectAnswers++;
-                }
-                else
-                {
-                    WrongAnswers.Add(CurrentExercise);
-                }
-                break;
-            case 3:
-                if (CurrentAnswer == Addends[0]*Addends[1])
-                {
-                    CorrectAnswers++;
-                }
-                else
-                {
-                    WrongAnswers.Add(CurrentExercise);
-                }
-                break;
-            case 4:
-                if (CurrentAnswer == Addends[0] / Addends[1])
-                {
-                    CorrectAnswers++;
-                }
-                else
-                {
-                    WrongAnswers.Add(CurrentExercise);
-                }
-                break; ;
+            CorrectAnswers++;
+        }
+        else
+        {
+            WrongAnswers.Add(CurrentExercise);
         }
         bool testvalue = false;
         CurrentAnswer = (testvalue == true) ? 1234 : (int?)null; //clear the int value
         GenerateAdditionExercise();
         await Focus("currentAnswerInput");
     }
-
-
-    //for (int questionNumber = 0; questionNumber < 3; questionNumber++)
-    //{
-    //    addend1 = randomizer.Next(QuizDifficulty);
-    //    addend2 = randomizer.Next(QuizDifficulty);
-    //    List<int> numbers = new List<int> { addend1, addend2 };
-    //    CurrentQuestion = string.Format("{0}x{1}=?", addend1, addend2);
-    //    if (CurrentAnswer == numbers.Aggregate((x, y) => x * y))
-    //        CorrectAnswers++;
-    //    else
-    //        WrongAnswers.Add(CurrentQuestion);
-    //}
 
     private int SetDifficulty(int selectedDifficulty)
     {
